@@ -1,0 +1,377 @@
+{
+    "ProofName": "POE",
+    "ProofDescriptiveName": "Proof of existance",
+    "NumberofSteps": 22,
+    "Segments": {
+      "01": "Retrieve TDP data from Tracified gateway according to the TDP ID",
+      "02": "Get transaction details from stellar Horizon API using tx hash",
+      "03": "Unmarshall and then decode the raw data (using base64) extracting the currentTXN",
+      "04": "Retrieve the raw data using the current Txn",
+      "05": "Compare the data hashes from blockchain and tracified"
+    },
+    "Steps": [
+      {
+        "StepNo": 1,
+        "SegmentNo": "01",
+        "Discription": "Using the TDPID call the tracified gateway and take the transaction details from the gateway db",
+        "Action": {
+          "ActionType": "ExternalAPICall",
+          "ActionParameters": {
+            "InputVariables": ["TDPID"],
+            "OutputVariables": ["Step01-Response"],
+            "Services": {
+              "ServiceName": "TracifiedGateway",
+              "ServiceURL": "TracifiedGatewayQuery",
+              "DocumentationLink": "",
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 2,
+        "SegmentNo": "01",
+        "Discription": "View the recieved data from the gateway db",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariables": ["Step01-Response"],
+            "OutputVariables": [],
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 3,
+        "SegmentNo": "01",
+        "Discription": "Highlight database identifier",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step01-Response"],
+            "OutputVariables": ["Step03-DatabaseIdentifer"],
+            "HighlightArgument": "Identifier",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 4,
+        "SegmentNo": "01",
+        "Discription": "Highlight database ProfileID",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step01-Response"],
+            "OutputVariables": ["Step04-DatabaseProfileID"],
+            "HighlightArgument": "ProfileID",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 5,
+        "SegmentNo": "01",
+        "Discription": "Highlight database Datahash",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step01-Response"],
+            "OutputVariables": ["Step05-DatabaseDatahash"],
+            "HighlightArgument": "Datahash",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 6,
+        "SegmentNo": "02",
+        "Discription": "Insert the transaction operation URL",
+        "Action": {
+          "ActionType": "BlockchainAPICall",
+          "ActionParameters": {
+            "InputVariables": ["txnhash"],
+            "OutputVariables": ["Step06-Response"],
+            "Services": {
+              "ServiceName": "HorizonAPIEndpoint",
+              "ServiceURL": "Horizon",
+              "DocumentationLink": "",
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 7,
+        "SegmentNo": "02",
+        "Discription": "Show the JSON format response of the transaction operations",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariables": ["Step06-Response"],
+            "OutputVariables": [],
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 8,
+        "SegmentNo": "02",
+        "Discription": "Highlight the Current Txn operation text in the json response",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step06-Response"],
+            "OutputVariables": ["Step08-CurrentTXN"],
+            "HighlightArgument": "CurrentTXN",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 9,
+        "SegmentNo": "03",
+        "Discription": "Base64 Decode the currentTXN",
+        "Action": {
+          "ActionType": "Base64Decode",
+          "ActionParameters": {
+            "InputVariables": ["Step08-CurrentTXN"],
+            "OutputVariables": ["Step09-DecodedCurrentTXN"],
+            "Services": {
+              "ServiceName": "Base64 service",
+              "ServiceURL": "",
+              "DocumentationLinks": "",
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 10,
+        "SegmentNo": "04",
+        "Discription": "Insert the currentTXN URL",
+        "Action": {
+          "ActionType": "BlockchainAPICall",
+          "ActionParameters": {
+            "InputVariables": ["Step09-DecodedCurrentTXN"],
+            "OutputVariables": ["Step10-BlockchainResponse"],
+            "Services": {
+              "ServiceName": "Horizon API endpoint",
+              "ServiceURL": "Horizon",
+              "DocumentationLinks": "",
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 11,
+        "SegmentNo": "04",
+        "Discription": "Find the manage data operations by name and find Blockchain identifier",
+        "Action": {
+          "ActionType": "Find field",
+          "ActionParameters": {
+            "InputVariables": ["Step10-StellarResponse"],
+            "OutputVariables": ["Step11-BlockchainIdentifier"],
+            "FindArgument": "Identifier",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 12,
+        "SegmentNo": "04",
+        "Discription": "Find the manage data operations by name and find Blockchain profileID",
+        "Action": {
+          "ActionType": "Find field",
+          "ActionParameters": {
+            "InputVariables": ["Step10-StellarResponse"],
+            "OutputVariables": ["Step12-BlockchainProfileID"],
+            "FindArgument": "ProfileID",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 13,
+        "SegmentNo": "04",
+        "Discription": "Find the manage data operations by name and find Blockchain datahash",
+        "Action": {
+          "ActionType": "Find field",
+          "ActionParameters": {
+            "InputVariables": ["Step10-BlockchainResponse"],
+            "OutputVariables": ["Step13-BlockchainDatahash"],
+            "FindArgument": "Datahash",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 14,
+        "SegmentNo": "04",
+        "Discription": "Show the identifier from the Blockchain",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariables": ["Step11-BlockchainIdentifier"],
+            "OutputVariables": [],
+            "DisplayArguement": "Identifier"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 15,
+        "SegmentNo": "04",
+        "Discription": "Show the profileID from the Blockchain",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariabless": ["Step12-BlockchainProfileID"],
+            "OutputVariables": [],
+            "DisplayArguement": "ProfileID"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 16,
+        "SegmentNo": "04",
+        "Discription": "Show the datahash from Blockchain",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariabless": ["Step13-BlockchainDataHash"],
+            "OutputVariables": [],
+            "DisplayArguement": "DataHash"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 17,
+        "SegmentNo": "04",
+        "Discription": "Show the identifier from gateway DB",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariabless": ["Step03-DatabaseIdentifier"],
+            "OutputVariables": [],
+            "DisplayArguement": "Identifier"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 18,
+        "SegmentNo": "04",
+        "Discription": "Show the ProfileID from gateway DB",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariabless": ["Step04-DatabaseProfileID"],
+            "OutputVariables": [],
+            "DisplayArguement": "ProfileID"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 19,
+        "SegmentNo": "04",
+        "Discription": "Show the Datahash from gateway DB",
+        "Action": {
+          "ActionType": "Display",
+          "ActionParameters": {
+            "InputVariabless": ["Step05-DatabaseDataHash"],
+            "OutputVariables": [],
+            "DisplayArguement": "DataHash"
+          },
+          "Services": {
+            "UIAutomationSteps": [""]
+          }
+        }
+      },
+      {
+        "StepNo": 20,
+        "SegmentNo": "04",
+        "Discription": "Highlight the Datahashes from Blockchain",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step13-BlockchainDataHash"],
+            "OutputVariables": [],
+            "HighlightArgument": "BlockchainDataHash",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 21,
+        "SegmentNo": "04",
+        "Discription": "Highlight the Datahashes from Database",
+        "Action": {
+          "ActionType": "Highlight Characters",
+          "ActionParameters": {
+            "InputVariables": ["Step05-DatabaseDatahash"],
+            "OutputVariables": [],
+            "HighlightArgument": "DatabaseDataHash",
+            "Services": {
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      },
+      {
+        "StepNo": 22,
+        "SegmentNo": "05",
+        "Discription": "Verify the Datahashes",
+        "Action": {
+          "ActionType": "CompareText",
+          "ActionParameters": {
+            "InputVariables": [
+              "Step13-BlockchainDatahash",
+              "Step05-DatabaseDatahash"
+            ],
+            "OutputVariables": ["Step22-Status"],
+            "Services": {
+              "ServiceName": "Diff service",
+              "ServiceURL": "",
+              "DocumentationLinks": "",
+              "UIAutomationSteps": []
+            }
+          }
+        }
+      }
+    ]
+  }
